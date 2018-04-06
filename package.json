@@ -12,7 +12,9 @@
   ],
   "author": "MQuy",
   "license": "MIT",
-  "devDependencies": {
-    "webpack": "^4.5.0"
+  "peerDependencies": {
+    "chalk": "^2.3.2",
+    "fast-glob": "^2.2.0",
+    "webpack": "> 3"
   }
 }
