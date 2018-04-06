@@ -18,6 +18,7 @@ function detectDeadCode(compilation, options) {
 
 function getPattern({ context, patterns, exclude }) {
   return patterns
+    .map((pattern) => path.resolve(context, pattern))
     .concat(exclude.map((pattern) => `!${exclude}`));
 }
 
@@ -43,7 +44,7 @@ function getUsedExportMap(compilation) {
 }
 
 function logUnusedExportMap(unusedExportMap) {
-  console.log(chalk.yellow('\n------- Unused Exports -------'));
+  console.log(chalk.yellow('\n--------------------- Unused Exports ---------------------'));
   if (Object.keys(unusedExportMap).length > 0) {
     let numberOfUnusedExport = 0;
 
@@ -83,15 +84,16 @@ function filterWebpackAssets(assets) {
     .filter((file) => file.indexOf('node_modules') === -1)
     .reduce((acc, file) => {
       const unixFile = file.replace(/\\+/g, '/');
+
       acc[unixFile]= true;
       return acc;
     }, {});
 }
 
 function logUnusedFiles(unusedFiles) {
-  console.log(chalk.yellow('\n------- Unused Files -------'));
+  console.log(chalk.yellow('\n--------------------- Unused Files ---------------------'));
   if (unusedFiles.length > 0) {
-    unusedFiles.forEach((file) => console.log(chalk.yellow(file)));
+    unusedFiles.forEach((file) => console.log(`\n${chalk.yellow(file)}`));
     console.log(
       chalk.yellow(`\nThere are ${unusedFiles.length} unused files (¬º-°)¬.`),
       chalk.red.bold(`\n\nPlease be careful if you want to remove them.\n`),
