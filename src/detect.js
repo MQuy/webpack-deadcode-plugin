@@ -27,11 +27,12 @@ function getUsedExportMap(compilation) {
 
   compilation.chunks.forEach(function(chunk) {
     chunk.forEachModule(function(module) {
-      if (module.usedExports !== true && module.providedExports !== true && /^((?!(node_modules|less)).)*$/.test(module.resource)) {
+      const providedExports = module.providedExports || module.buildMeta.providedExports;
+      if (module.usedExports !== true && providedExports !== true && /^((?!(node_modules|less)).)*$/.test(module.resource)) {
         if (module.usedExports === false) {
-          unusedExportMap[module.resource] = module.providedExports;
-        } else if (module.providedExports) {
-          const unusedExports = module.providedExports.filter(x => !module.usedExports.includes(x));
+          unusedExportMap[module.resource] = providedExports;
+        } else if (providedExports instanceof Array) {
+          const unusedExports = providedExports.filter(x => !module.usedExports.includes(x));
 
           if (unusedExports.length > 0) {
             unusedExportMap[module.resource] = unusedExports;;
