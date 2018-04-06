@@ -56,7 +56,7 @@ function logUnusedExportMap(unusedExportMap) {
       console.log(chalk.yellow(`    ⟶   ${unusedExports.join(', ')}`))
       numberOfUnusedExport += unusedExports.length;
     });
-    console.log(chalk.yellow(`\nThere are ${numberOfUnusedExport} unused exports(¬º-°)¬.\n`));
+    console.log(chalk.yellow(`\nThere are ${numberOfUnusedExport} unused exports (¬º-°)¬.\n`));
   } else {
     console.log(chalk.green('\nPerfect, there is nothing to do ٩(◕‿◕｡)۶.'));
   }
