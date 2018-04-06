@@ -21,10 +21,14 @@ Via yarn:
 $ yarn add -D webpack-deadcode-plugin
 ```
 
+![output](https://i.imgur.com/mowUPx5.png)
+
 ### Usage
 
 The plugin will report unused files and unused exports into your terminal but those are not part of your webpack build process, therefore, it will not fail your build (warning you). Simple add into your webpack config as follows:
 
+
+**Webpack 3**
 ```js
 const DeadCodePlugin = require('webpack-deadcode-plugin');
 
@@ -41,7 +45,31 @@ const webpackConfig = {
     })
   ]
 }
-``` 
+```
+
+**Webpack 4**
+
+```js
+const DeadCodePlugin = require('webpack-deadcode-plugin');
+
+const webpackConfig = {
+  ...
+  optimization: {
+    usedExports: true,
+  },
+  plugins: [
+    new DeadCodePlugin({
+      patterns: [
+        'src/**/*.(js|jsx|css)',
+      ],
+      exclude: [
+        '**/*.(stories|spec).(js|jsx)',
+      ],
+    })
+  ]
+}
+
+```
 
 ### Configuration
 
