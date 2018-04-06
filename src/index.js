@@ -16,6 +16,7 @@ class WebpackDeadcodePlugin {
         compilation,
         {
           context: compiler.context,
+          patterns: ["**/*.*"],
           exclude: [],
           ...this.options
         }
