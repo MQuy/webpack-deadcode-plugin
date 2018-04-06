@@ -63,7 +63,7 @@ function logUnusedExportMap(unusedExportMap) {
 }
 
 function getWebpackAssets(compilation) {
-  let assets = [...compilation.fileDependencies];
+  let assets = Array.from(compilation.fileDependencies);
 
   compilation.chunks.forEach(function(chunk) {
     chunk.forEachModule(function(module) {
