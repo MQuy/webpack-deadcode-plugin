@@ -21,6 +21,7 @@ class WebpackDeadcodePlugin {
           ...this.options
         }
       );
+      done();
     });
   }
 }
