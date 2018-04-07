@@ -3,13 +3,13 @@ const detectDeadcode = require('./detect');
 
 class WebpackDeadcodePlugin {
   constructor(options = {}) {
-    this.options = Object.assign(options, { patterns: options.patterns || [`**/*.*`]});
+    this.options = options;
   }
 
   apply(compiler) {
-    compiler.plugin(`after-emit`, (compilation, callback) => {
-      const options = Object.assign({ context: compiler.context, patterns: ["**/*.*"], exclude: [] }, this.options);
+    const options = Object.assign({ patterns: ['**/*.*'], exclude: [], context: compiler.context }, this.options);
 
+    compiler.plugin(`after-emit`, (compilation, callback) => {
       detectDeadcode(compilation, options);
       callback();
     });

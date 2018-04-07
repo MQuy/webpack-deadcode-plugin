@@ -28,7 +28,7 @@ function getUsedExportMap(compilation) {
   compilation.chunks.forEach(function(chunk) {
     chunk.forEachModule(function(module) {
       const providedExports = module.providedExports || module.buildMeta.providedExports;
-      if (module.usedExports !== true && providedExports !== true && /^((?!(node_modules|less)).)*$/.test(module.resource)) {
+      if (module.usedExports !== true && providedExports !== true && /^((?!(node_modules)).)*$/.test(module.resource)) {
         if (module.usedExports === false) {
           unusedExportMap[module.resource] = providedExports;
         } else if (providedExports instanceof Array) {
@@ -65,18 +65,11 @@ function logUnusedExportMap(unusedExportMap) {
 function getWebpackAssets(compilation) {
   let assets = Array.from(compilation.fileDependencies);
 
-  compilation.chunks.forEach(function(chunk) {
-    chunk.forEachModule(function(module) {
-      assets = assets.concat(module.fileDependencies).filter(Boolean);
-    })
-  });
-
   Object.keys(compilation.assets).forEach(assetName => {
     const assetPath = compilation.assets[assetName].existsAt;
 
     assets.push(assetPath);
   });
-
   return assets;
 }
 

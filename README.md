@@ -29,6 +29,7 @@ The plugin will report unused files and unused exports into your terminal but th
 
 
 **Webpack 3**
+
 ```js
 const DeadCodePlugin = require('webpack-deadcode-plugin');
 
