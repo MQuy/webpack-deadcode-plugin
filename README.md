@@ -27,6 +27,26 @@ $ yarn add -D webpack-deadcode-plugin
 
 The plugin will report unused files and unused exports into your terminal but those are not part of your webpack build process, therefore, it will not fail your build (warning you). Simple add into your webpack config as follows:
 
+✍️ If you use `babel-loader`, you have to set `modules: false` to make it works
+
+```bash
+# in .babelrc
+{
+  "presets": [
+    ["env", { modules: false }]
+  ]
+}
+
+# or in webpack.config.js -> module/rules
+{
+  loader: 'babel-loader',
+  options: {
+    presets: [
+      ['env', { modules: false }
+    ]
+  }
+}
+```
 
 **Webpack 3**
 
