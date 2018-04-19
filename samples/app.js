@@ -2,7 +2,7 @@ import { createElement, Component } from 'react';
 import { render } from 'react-dom';
 import { demo, xyz } from './unused';
 
-import styles from './app.css';
+import { xxx } from './app.css';
 
 demo();
 xyz();
@@ -25,8 +25,8 @@ class App extends Component {
       <div>
         <ul>
           {
-            stories.map((story) => (
-              <Story story={story} onRemove={this.removeStory}/>
+            stories.map((story, index) => (
+              <Story key={index} story={story} onRemove={this.removeStory}/>
             ))
           }
         </ul>
@@ -46,17 +46,17 @@ class App extends Component {
 class Story extends Component {
   constructor(props) {
     super(props);
-    
+
     this.state = { likes: Math.ceil(Math.random() * 100) };
   }
   render() {
     const { story, onRemove } = this.props;
     const { likes } = this.state;
-    
+
     return (
       <li>
         <button onClick={this.handleClick}>{likes}❤️</button>
-        <a href={story.url}>{story.name}</a>
+        <a className={xxx} href={story.url}>{story.name}</a>
         <button onClick={onRemove(story)}>Remove</button>
       </li>
     );
@@ -68,4 +68,6 @@ class Story extends Component {
   }
 }
 
-render(<App />, document.getElementById("root"));
+export function reload() {
+  render(<App />, document.getElementById("root"));
+}

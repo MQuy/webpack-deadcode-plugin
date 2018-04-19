@@ -1,3 +1,8 @@
 .abcdef {
   display: inline;
 }
+
+.xxx {
+  composes: zzzz from './vendor.css';
+  float: left;
+}

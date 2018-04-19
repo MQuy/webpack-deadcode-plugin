@@ -1,12 +1,17 @@
 const webpack = require('webpack');
 const path = require('path');
 const DeadCodePlugin = require('webpack-deadcode-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { cssLoader, styleLoader, MiniCssExtractPlugin, miniCssExtractLoader } = require('es6-css-loader');
 
 module.exports = {
-  entry: './app.js',
+  entry: [
+    `webpack-hot-middleware/client?path=http://localhost:3000/__webpack_hmr`,
+    './index.js'
+  ],
   target: 'web',
   devtool: 'source-map',
-  
+
   output: {
     path: __dirname,
     filename: 'bundle.js',
@@ -42,12 +47,12 @@ module.exports = {
       {
         test: /\.css$/,
         use: [
-          'style-loader',
+          styleLoader,
           {
             loader: 'css-loader',
             options: {
-              modules: true
-            }
+              module: true,
+            },
           }
         ]
       }
@@ -57,6 +62,11 @@ module.exports = {
     new DeadCodePlugin({
       patterns: ['*.js'],
       exclude: ['**/node_modules/**']
+    }),
+    new webpack.NamedModulesPlugin(),
+    new webpack.HotModuleReplacementPlugin(),
+    new HtmlWebpackPlugin({
+      template: 'index.html',
     }),
   ],
 }
