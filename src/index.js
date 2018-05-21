@@ -9,10 +9,16 @@ class WebpackDeadcodePlugin {
   apply(compiler) {
     const options = Object.assign({ patterns: ['**/*.*'], exclude: [], context: compiler.context }, this.options);
 
-    compiler.plugin(`after-emit`, (compilation, callback) => {
-      detectDeadcode(compilation, options);
-      callback();
-    });
+    if (compiler.hooks) {
+      compiler.hooks.afterEmit.tapAsync('WebpackDeadcodePlugin', this.handleAfterEmit.bind(this, options));
+    } else {
+      compiler.plugin(`after-emit`, this.handleAfterEmit.bind(this, options));
+    }
+  }
+
+  handleAfterEmit(options, compilation, callback) {
+    detectDeadcode(compilation, options);
+    callback();
   }
 }
 
