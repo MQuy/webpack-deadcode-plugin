@@ -114,10 +114,10 @@ The array of patterns to not look at.
 Current working directoy for patterns above. If you don't set explicitly, your webpack context will be used.
 
 
-[npm]: https://img.shields.io/npm/v/webpack.svg
-[npm-url]: https://npmjs.com/package/webpack
+[npm]: https://img.shields.io/npm/v/webpack-deadcode-plugin.svg
+[npm-url]: https://npmjs.com/package/webpack-deadcode-plugin
 
-[node]: https://img.shields.io/node/v/webpack.svg
+[node]: https://img.shields.io/node/v/webpack-deadcode-plugin.svg
 [node-url]: https://nodejs.org
 
 [deps]: https://img.shields.io/david/MQuy/webpack-deadcode-plugin.svg
