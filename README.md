@@ -89,21 +89,22 @@ const webpackConfig = {
     })
   ]
 }
-
 ```
+
+✍️ Using with typescript loader ([ts-loader](https://github.com/TypeStrong/ts-loader), [awesome-typescript-loader](https://github.com/s-panferov/awesome-typescript-loader)), if you enable `transpileOnly`, output might be not correct due to [this issue](https://github.com/TypeStrong/ts-loader/issues/783). In case of incorrect output, the workaround solution is disabling `transpileOnly`, it will slow down webpack compiling time.
 
 ### Configuration
 
 ```js
-new DeadCodePlugin(options)
+new DeadCodePlugin(options);
 ```
 
 #### options.patterns
 
 The array of patterns to look for unused files and unused export in used files.
 
-+ Default: `["**/*.*"]`
-+ Directly pass to [`fast-glob`](https://github.com/mrmlnc/fast-glob)
+* Default: `["**/*.*"]`
+* Directly pass to [`fast-glob`](https://github.com/mrmlnc/fast-glob)
 
 #### options.exclude
 
@@ -113,15 +114,11 @@ The array of patterns to not look at.
 
 Current working directoy for patterns above. If you don't set explicitly, your webpack context will be used.
 
-
 [npm]: https://img.shields.io/npm/v/webpack-deadcode-plugin.svg
 [npm-url]: https://npmjs.com/package/webpack-deadcode-plugin
-
 [node]: https://img.shields.io/node/v/webpack-deadcode-plugin.svg
 [node-url]: https://nodejs.org
-
 [deps]: https://img.shields.io/david/MQuy/webpack-deadcode-plugin.svg
 [deps-url]: https://david-dm.org/MQuy/webpack-deadcode-plugin
-
-[licenses]:	https://img.shields.io/github/license/MQuy/webpack-deadcode-plugin.svg
+[licenses]: https://img.shields.io/github/license/MQuy/webpack-deadcode-plugin.svg
 [licenses-url]: https://github.com/MQuy/webpack-deadcode-plugin/blob/master/LICENSE
