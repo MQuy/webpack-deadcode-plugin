@@ -18,15 +18,15 @@ function detectDeadCode(compilation, options) {
 
 function getPattern({ context, patterns, exclude }) {
   return patterns
-    .map((pattern) => path.resolve(context, pattern))
-    .concat(exclude.map((pattern) => `!${exclude}`));
+    .map(pattern => path.resolve(context, pattern))
+    .concat(exclude.map(pattern => `!${pattern}`));
 }
 
 function getUsedExportMap(compilation) {
   const unusedExportMap = {};
 
   compilation.chunks.forEach(function(chunk) {
-    chunk.forEachModule(function(module) {
+    for(const module of chunk.modulesIterable) {
       const providedExports = module.providedExports || module.buildMeta.providedExports;
       if (module.usedExports !== true && providedExports !== true && /^((?!(node_modules)).)*$/.test(module.resource)) {
         if (module.usedExports === false) {
@@ -39,7 +39,7 @@ function getUsedExportMap(compilation) {
           }
         }
       }
-    })
+    }
   });
   return unusedExportMap;
 }
