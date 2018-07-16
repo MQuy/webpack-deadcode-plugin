@@ -103,8 +103,8 @@ new DeadCodePlugin(options);
 
 The array of patterns to look for unused files and unused export in used files.
 
-* Default: `["**/*.*"]`
-* Directly pass to [`fast-glob`](https://github.com/mrmlnc/fast-glob)
+- Default: `["**/*.*"]`
+- Directly pass to [`fast-glob`](https://github.com/mrmlnc/fast-glob)
 
 #### options.exclude
 
@@ -113,6 +113,10 @@ The array of patterns to not look at.
 #### options.context
 
 Current working directoy for patterns above. If you don't set explicitly, your webpack context will be used.
+
+#### options.failOnHint
+
+deadcode does not interrupt the compilation by default. If you want to cancel the compilation, set it true, it throws a fatal error and stops the compilation.
 
 [npm]: https://img.shields.io/npm/v/webpack-deadcode-plugin.svg
 [npm-url]: https://npmjs.com/package/webpack-deadcode-plugin

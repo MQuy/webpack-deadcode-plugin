@@ -1,5 +1,5 @@
-const path = require('path');
-const detectDeadcode = require('./detect');
+const path = require("path");
+const detectDeadcode = require("./detect");
 
 class WebpackDeadcodePlugin {
   constructor(options = {}) {
@@ -7,10 +7,13 @@ class WebpackDeadcodePlugin {
   }
 
   apply(compiler) {
-    const options = Object.assign({ patterns: ['**/*.*'], exclude: [], context: compiler.context }, this.options);
+    const options = Object.assign(
+      { patterns: ["**/*.*"], exclude: [], context: compiler.context, failOnHint: false },
+      this.options
+    );
 
     if (compiler.hooks) {
-      compiler.hooks.afterEmit.tapAsync('WebpackDeadcodePlugin', this.handleAfterEmit.bind(this, options));
+      compiler.hooks.afterEmit.tapAsync("WebpackDeadcodePlugin", this.handleAfterEmit.bind(this, options));
     } else {
       compiler.plugin(`after-emit`, this.handleAfterEmit.bind(this, options));
     }

@@ -1,32 +1,33 @@
-const path = require('path');
-const chalk = require('chalk');
-const fg = require('fast-glob');
+const path = require("path");
+const chalk = require("chalk");
+const fg = require("fast-glob");
 
 function detectDeadCode(compilation, options) {
   const assets = getWebpackAssets(compilation);
   const compiledFiles = filterWebpackAssets(assets);
   const usedPatterns = getPattern(options);
-  const unusedFiles =
-    fg
-      .sync(usedPatterns)
-      .filter((file) => !compiledFiles[file]);
+  const unusedFiles = fg.sync(usedPatterns).filter(file => !compiledFiles[file]);
   const unusedExportMap = getUsedExportMap(compilation);
 
   logUnusedFiles(unusedFiles);
   logUnusedExportMap(unusedExportMap);
+
+  if (unusedFiles.length > 0 || unusedExportMap.length > 0) {
+    if (options.failOnHint) {
+      process.exit(2);
+    }
+  }
 }
 
 function getPattern({ context, patterns, exclude }) {
-  return patterns
-    .map(pattern => path.resolve(context, pattern))
-    .concat(exclude.map(pattern => `!${pattern}`));
+  return patterns.map(pattern => path.resolve(context, pattern)).concat(exclude.map(pattern => `!${pattern}`));
 }
 
 function getUsedExportMap(compilation) {
   const unusedExportMap = {};
 
   compilation.chunks.forEach(function(chunk) {
-    for(const module of chunk.modulesIterable) {
+    for (const module of chunk.modulesIterable) {
       const providedExports = module.providedExports || module.buildMeta.providedExports;
       if (module.usedExports !== true && providedExports !== true && /^((?!(node_modules)).)*$/.test(module.resource)) {
         if (module.usedExports === false) {
@@ -35,7 +36,7 @@ function getUsedExportMap(compilation) {
           const unusedExports = providedExports.filter(x => !module.usedExports.includes(x));
 
           if (unusedExports.length > 0) {
-            unusedExportMap[module.resource] = unusedExports;;
+            unusedExportMap[module.resource] = unusedExports;
           }
         }
       }
@@ -45,7 +46,7 @@ function getUsedExportMap(compilation) {
 }
 
 function logUnusedExportMap(unusedExportMap) {
-  console.log(chalk.yellow('\n--------------------- Unused Exports ---------------------'));
+  console.log(chalk.yellow("\n--------------------- Unused Exports ---------------------"));
   if (Object.keys(unusedExportMap).length > 0) {
     let numberOfUnusedExport = 0;
 
@@ -53,12 +54,12 @@ function logUnusedExportMap(unusedExportMap) {
       const unusedExports = unusedExportMap[modulePath];
 
       console.log(chalk.yellow(`\n${modulePath}`));
-      console.log(chalk.yellow(`    ⟶   ${unusedExports.join(', ')}`))
+      console.log(chalk.yellow(`    ⟶   ${unusedExports.join(", ")}`));
       numberOfUnusedExport += unusedExports.length;
     });
     console.log(chalk.yellow(`\nThere are ${numberOfUnusedExport} unused exports (¬º-°)¬.\n`));
   } else {
-    console.log(chalk.green('\nPerfect, there is nothing to do ٩(◕‿◕｡)۶.'));
+    console.log(chalk.green("\nPerfect, there is nothing to do ٩(◕‿◕｡)۶."));
   }
 }
 
@@ -74,26 +75,24 @@ function getWebpackAssets(compilation) {
 }
 
 function filterWebpackAssets(assets) {
-  return assets
-    .filter((file) => file.indexOf('node_modules') === -1)
-    .reduce((acc, file) => {
-      const unixFile = file.replace(/\\+/g, '/');
+  return assets.filter(file => file.indexOf("node_modules") === -1).reduce((acc, file) => {
+    const unixFile = file.replace(/\\+/g, "/");
 
-      acc[unixFile]= true;
-      return acc;
-    }, {});
+    acc[unixFile] = true;
+    return acc;
+  }, {});
 }
 
 function logUnusedFiles(unusedFiles) {
-  console.log(chalk.yellow('\n--------------------- Unused Files ---------------------'));
+  console.log(chalk.yellow("\n--------------------- Unused Files ---------------------"));
   if (unusedFiles.length > 0) {
-    unusedFiles.forEach((file) => console.log(`\n${chalk.yellow(file)}`));
+    unusedFiles.forEach(file => console.log(`\n${chalk.yellow(file)}`));
     console.log(
       chalk.yellow(`\nThere are ${unusedFiles.length} unused files (¬º-°)¬.`),
-      chalk.red.bold(`\n\nPlease be careful if you want to remove them.\n`),
+      chalk.red.bold(`\n\nPlease be careful if you want to remove them.\n`)
     );
   } else {
-    console.log(chalk.green('\nPerfect, there is nothing to do ٩(◕‿◕｡)۶.'));
+    console.log(chalk.green("\nPerfect, there is nothing to do ٩(◕‿◕｡)۶."));
   }
 }
 
