@@ -99,14 +99,11 @@ const webpackConfig = {
 new DeadCodePlugin(options);
 ```
 
-#### options.patterns
+#### options.patterns (default: `["**/*.*"]`)
 
-The array of patterns to look for unused files and unused export in used files.
+The array of patterns to look for unused files and unused export in used files. Directly pass to [`fast-glob`](https://github.com/mrmlnc/fast-glob)
 
-- Default: `["**/*.*"]`
-- Directly pass to [`fast-glob`](https://github.com/mrmlnc/fast-glob)
-
-#### options.exclude
+#### options.exclude (default: `[]`)
 
 The array of patterns to not look at.
 
@@ -114,7 +111,7 @@ The array of patterns to not look at.
 
 Current working directoy for patterns above. If you don't set explicitly, your webpack context will be used.
 
-#### options.failOnHint
+#### options.failOnHint (default: `false`)
 
 deadcode does not interrupt the compilation by default. If you want to cancel the compilation, set it true, it throws a fatal error and stops the compilation.
 
