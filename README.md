@@ -48,6 +48,8 @@ The plugin will report unused files and unused exports into your terminal but th
 }
 ```
 
+✍ For typescript project, you shouldn't turn `transpileOnly` on (keep it default as `false`). Under some circumstances and production mode, it is better to use `[awesome-typescript-loader](https://github.com/s-panferov/awesome-typescript-loader)` instead of `[ts-loader](https://github.com/TypeStrong/ts-loader/)`
+
 **Webpack 3**
 
 ```js
