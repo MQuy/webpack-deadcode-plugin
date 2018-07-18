@@ -48,8 +48,6 @@ The plugin will report unused files and unused exports into your terminal but th
 }
 ```
 
-✍ For typescript project, you shouldn't turn `transpileOnly` on (keep it default as `false`). Under some circumstances and production mode, it is better to use `[awesome-typescript-loader](https://github.com/s-panferov/awesome-typescript-loader)` instead of `[ts-loader](https://github.com/TypeStrong/ts-loader/)`
-
 **Webpack 3**
 
 ```js
@@ -94,6 +92,8 @@ const webpackConfig = {
 ```
 
 ✍️ Using with typescript loader ([ts-loader](https://github.com/TypeStrong/ts-loader), [awesome-typescript-loader](https://github.com/s-panferov/awesome-typescript-loader)), if you enable `transpileOnly`, output might be not correct due to [this issue](https://github.com/TypeStrong/ts-loader/issues/783). In case of incorrect output, the workaround solution is disabling `transpileOnly`, it will slow down webpack compiling time.
+
+✍ Under some circumstances and production mode, if your output displays incorrect unused files, we encourage switching to [`awesome-typescript-loader`](https://github.com/s-panferov/awesome-typescript-loader).
 
 ### Configuration
 
