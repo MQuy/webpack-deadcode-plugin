@@ -21,7 +21,7 @@ Via yarn:
 $ yarn add -D webpack-deadcode-plugin
 ```
 
-![output](https://i.imgur.com/mowUPx5.png)
+![output](https://i.imgur.com/3Ll49Pj.png)
 
 ### Usage
 
