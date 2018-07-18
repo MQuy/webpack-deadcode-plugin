@@ -4,10 +4,10 @@ const fg = require("fast-glob");
 
 function detectDeadCode(compilation, options) {
   const assets = getWebpackAssets(compilation);
-  const compiledFiles = filterWebpackAssets(assets);
-  const usedPatterns = getPattern(options);
-  const unusedFiles = fg.sync(usedPatterns).filter(file => !compiledFiles[file]);
-  const unusedExportMap = getUsedExportMap(compilation);
+  const compiledFiles = convertFilesToDict(assets);
+  const includedFiles = fg.sync(getPattern(options));
+  const unusedFiles = includedFiles.filter(file => !compiledFiles[file]);
+  const unusedExportMap = getUsedExportMap(convertFilesToDict(includedFiles), compilation);
 
   logUnusedFiles(unusedFiles);
   logUnusedExportMap(unusedExportMap);
@@ -23,20 +23,29 @@ function getPattern({ context, patterns, exclude }) {
   return patterns.map(pattern => path.resolve(context, pattern)).concat(exclude.map(pattern => `!${pattern}`));
 }
 
-function getUsedExportMap(compilation) {
+function getUsedExportMap(includedFileMap, compilation) {
   const unusedExportMap = {};
 
   compilation.chunks.forEach(function(chunk) {
     for (const module of chunk.modulesIterable) {
+      if (!module.resource) continue;
+
       const providedExports = module.providedExports || module.buildMeta.providedExports;
-      if (module.usedExports !== true && providedExports !== true && /^((?!(node_modules)).)*$/.test(module.resource)) {
+      const path = convertToUnixPath(module.resource);
+
+      if (
+        module.usedExports !== true &&
+        providedExports !== true &&
+        /^((?!(node_modules)).)*$/.test(path) &&
+        includedFileMap[path]
+      ) {
         if (module.usedExports === false) {
-          unusedExportMap[module.resource] = providedExports;
+          unusedExportMap[path] = providedExports;
         } else if (providedExports instanceof Array) {
           const unusedExports = providedExports.filter(x => !module.usedExports.includes(x));
 
           if (unusedExports.length > 0) {
-            unusedExportMap[module.resource] = unusedExports;
+            unusedExportMap[path] = unusedExports;
           }
         }
       }
@@ -74,9 +83,9 @@ function getWebpackAssets(compilation) {
   return assets;
 }
 
-function filterWebpackAssets(assets) {
+function convertFilesToDict(assets) {
   return assets.filter(file => file.indexOf("node_modules") === -1).reduce((acc, file) => {
-    const unixFile = file.replace(/\\+/g, "/");
+    const unixFile = convertToUnixPath(file);
 
     acc[unixFile] = true;
     return acc;
@@ -96,4 +105,7 @@ function logUnusedFiles(unusedFiles) {
   }
 }
 
+function convertToUnixPath(path) {
+  return path.replace(/\\+/g, "/");
+}
 module.exports = detectDeadCode;
