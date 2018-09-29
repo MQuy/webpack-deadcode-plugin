@@ -5,26 +5,26 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const {
   styleLoader,
   MiniCssExtractPlugin,
-  miniCssExtractLoader,
+  miniCssExtractLoader
 } = require("es6-css-loader");
 
 module.exports = {
   entry: [
     `webpack-hot-middleware/client?path=http://localhost:3000/__webpack_hmr`,
-    "./index.js",
+    "./index.js"
   ],
   target: "web",
   devtool: "source-map",
 
   output: {
     path: __dirname,
-    filename: "bundle.js",
+    filename: "bundle.js"
   },
 
   mode: "development",
 
   optimization: {
-    usedExports: true,
+    usedExports: true
   },
 
   module: {
@@ -34,17 +34,30 @@ module.exports = {
         loader: "babel-loader",
         query: {
           babelrc: false,
-          presets: ["stage-2"],
+          presets: [],
           plugins: [
             [
-              "transform-react-jsx",
+              "@babel/plugin-transform-react-jsx",
               {
-                pragma: "createElement",
-              },
+                pragma: "createElement"
+              }
             ],
-            "transform-class-properties",
-          ],
-        },
+            "@babel/plugin-syntax-dynamic-import",
+            "@babel/plugin-syntax-import-meta",
+            "@babel/plugin-proposal-class-properties",
+            "@babel/plugin-proposal-json-strings",
+            [
+              "@babel/plugin-proposal-decorators",
+              {
+                legacy: true
+              }
+            ],
+            "@babel/plugin-proposal-function-sent",
+            "@babel/plugin-proposal-export-namespace-from",
+            "@babel/plugin-proposal-numeric-separator",
+            "@babel/plugin-proposal-throw-expressions"
+          ]
+        }
       },
       {
         test: /\.css$/,
@@ -53,22 +66,22 @@ module.exports = {
           {
             loader: "css-loader",
             options: {
-              modules: true,
-            },
-          },
-        ],
-      },
-    ],
+              modules: true
+            }
+          }
+        ]
+      }
+    ]
   },
   plugins: [
     new DeadCodePlugin({
       patterns: ["*.(js|css)"],
-      exclude: ["**/node_modules/**"],
+      exclude: ["**/node_modules/**"]
     }),
     new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
-      template: "index.html",
-    }),
-  ],
+      template: "template.html"
+    })
+  ]
 };

@@ -91,7 +91,17 @@ const webpackConfig = {
 }
 ```
 
-✍️ Using with typescript loader ([ts-loader](https://github.com/TypeStrong/ts-loader), [awesome-typescript-loader](https://github.com/s-panferov/awesome-typescript-loader)), if you enable `transpileOnly`, output might be not correct due to [this issue](https://github.com/TypeStrong/ts-loader/issues/783). In case of incorrect output, the workaround solution is disabling `transpileOnly`, it will slow down webpack compiling time.
+#### Using non-existent css class names
+
+To detect using non-existent class names in your codebase, you have to use [`es6-css-loader`](https://github.com/MQuy/es6-css-loader) instead of `style-loader/mini-css-extract-plugin`. They are quite similiar in term of api except [`es6-css-loader`](https://github.com/MQuy/es6-css-loader) supports to detect non-existent css class names.
+
+![non-existent css class names](https://i.imgur.com/amHZF5Q.png)
+
+You can check `samples` folder, how to to config `webpack-deadcode-plugin` and `es6-css-loader`.
+
+#### Typescript
+
+Using with typescript loader ([ts-loader](https://github.com/TypeStrong/ts-loader), [awesome-typescript-loader](https://github.com/s-panferov/awesome-typescript-loader)), if you enable `transpileOnly/happyPackMode`, output might be not correct due to [this issue](https://github.com/TypeStrong/ts-loader/issues/783). In case of incorrect output, the workaround solution is disabling `transpileOnly`, it will slow down webpack compiling time.
 
 ✍ Under some circumstances and production mode, if your output displays incorrect unused files, we encourage switching to [`awesome-typescript-loader`](https://github.com/s-panferov/awesome-typescript-loader).
 
@@ -116,6 +126,7 @@ Current working directoy for patterns above. If you don't set explicitly, your w
 #### options.failOnHint (default: `false`)
 
 deadcode does not interrupt the compilation by default. If you want to cancel the compilation, set it true, it throws a fatal error and stops the compilation.
+
 
 [npm]: https://img.shields.io/npm/v/webpack-deadcode-plugin.svg
 [npm-url]: https://npmjs.com/package/webpack-deadcode-plugin
