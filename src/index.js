@@ -8,7 +8,14 @@ class WebpackDeadcodePlugin {
 
   apply(compiler) {
     const options = Object.assign(
-      { patterns: ["**/*.*"], exclude: [], context: compiler.context, failOnHint: false },
+      {
+        patterns: ["**/*.*"],
+        exclude: [],
+        context: compiler.context,
+        failOnHint: false,
+        detectUnusedFiles: true,
+        detectUnusedExport: true
+      },
       this.options
     );
 

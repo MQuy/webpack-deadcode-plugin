@@ -125,8 +125,15 @@ Current working directoy for patterns above. If you don't set explicitly, your w
 
 #### options.failOnHint (default: `false`)
 
-deadcode does not interrupt the compilation by default. If you want to cancel the compilation, set it true, it throws a fatal error and stops the compilation.
+Deadcode does not interrupt the compilation by default. If you want to cancel the compilation, set it true, it throws a fatal error and stops the compilation.
 
+#### options.detectUnusedFiles (default: `true`)
+
+Whether to run unused files detection or not.
+
+#### options.detectUnusedExport (default: `true`)
+
+Whether to run unsed export detection or not.
 
 [npm]: https://img.shields.io/npm/v/webpack-deadcode-plugin.svg
 [npm-url]: https://npmjs.com/package/webpack-deadcode-plugin

@@ -6,11 +6,19 @@ function detectDeadCode(compilation, options) {
   const assets = getWebpackAssets(compilation);
   const compiledFiles = convertFilesToDict(assets);
   const includedFiles = fg.sync(getPattern(options));
-  const unusedFiles = includedFiles.filter(file => !compiledFiles[file]);
-  const unusedExportMap = getUsedExportMap(convertFilesToDict(includedFiles), compilation);
 
-  logUnusedFiles(unusedFiles);
-  logUnusedExportMap(unusedExportMap);
+  let unusedFiles = [];
+  let unusedExportMap = [];
+
+  if (options.detectUnusedFiles) {
+    unusedFiles = includedFiles.filter(file => !compiledFiles[file]);
+    logUnusedFiles(unusedFiles);
+  }
+
+  if (options.detectUnusedExport) {
+    unusedExportMap = getUsedExportMap(convertFilesToDict(includedFiles), compilation);
+    logUnusedExportMap(unusedExportMap);
+  }
 
   if (unusedFiles.length > 0 || unusedExportMap.length > 0) {
     if (options.failOnHint) {
@@ -84,12 +92,14 @@ function getWebpackAssets(compilation) {
 }
 
 function convertFilesToDict(assets) {
-  return assets.filter(file => file.indexOf("node_modules") === -1).reduce((acc, file) => {
-    const unixFile = convertToUnixPath(file);
+  return assets
+    .filter(file => file.indexOf("node_modules") === -1)
+    .reduce((acc, file) => {
+      const unixFile = convertToUnixPath(file);
 
-    acc[unixFile] = true;
-    return acc;
-  }, {});
+      acc[unixFile] = true;
+      return acc;
+    }, {});
 }
 
 function logUnusedFiles(unusedFiles) {
