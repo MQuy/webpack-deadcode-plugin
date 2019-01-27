@@ -12,14 +12,14 @@
   ],
   "author": "MQuy",
   "license": "MIT",
-  "devDependencies": {
-    "chalk": "^2.0.0",
+  "peerDependencies": {
     "webpack": "> 3"
   },
   "engines": {
     "node": ">=6.11.5"
   },
   "dependencies": {
+    "chalk": "^2.0.0",
     "fast-glob": "^2.0.0"
   }
 }
