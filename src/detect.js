@@ -50,7 +50,9 @@ function getUsedExportMap(includedFileMap, compilation) {
         if (module.usedExports === false) {
           unusedExportMap[path] = providedExports;
         } else if (providedExports instanceof Array) {
-          const unusedExports = providedExports.filter(x => !module.usedExports.includes(x));
+          const unusedExports = providedExports.filter(
+            x => module.usedExports instanceof Array && !module.usedExports.includes(x)
+          );
 
           if (unusedExports.length > 0) {
             unusedExportMap[path] = unusedExports;
