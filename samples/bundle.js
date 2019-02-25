@@ -64,7 +64,7 @@
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "9b1671e9e47a1ffb62b5";
+/******/ 	var hotCurrentHash = "753c3a2ce59f934694a9";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -1227,7 +1227,7 @@ exports = module.exports = __webpack_require__(/*! ./node_modules/css-loader/lib
 exports.i(__webpack_require__(/*! -!./node_modules/css-loader??ref--5-1!./vendor.css */ "./node_modules/css-loader/index.js?!./vendor.css"), undefined);
 
 // module
-exports.push([module.i, "._1DbMug7DVSpXvNLyPQ-kjP {\n  display: inline;\n}\n\n.GlPQplUrnlvsck4QEoOs4 {\n  float: left;\n}", ""]);
+exports.push([module.i, "._1DbMug7DVSpXvNLyPQ-kjP {\r\n  display: inline;\r\n}\r\n\r\n.GlPQplUrnlvsck4QEoOs4 {\r\n  float: left;\r\n}", ""]);
 
 // exports
 exports.locals = {
@@ -1250,7 +1250,7 @@ exports = module.exports = __webpack_require__(/*! ./node_modules/css-loader/lib
 
 
 // module
-exports.push([module.i, ".gkFEy45fBh7FLpvCb4CV3 {\n  margin: auto;\n}\n\n._3D_Pdj4iGUsoIk5UUgtjZp {\n  padding: auto;\n}", ""]);
+exports.push([module.i, ".gkFEy45fBh7FLpvCb4CV3 {\r\n  margin: auto;\r\n}\r\n\r\n._3D_Pdj4iGUsoIk5UUgtjZp {\r\n  padding: auto;\r\n}", ""]);
 
 // exports
 exports.locals = {
