@@ -95,7 +95,7 @@ function getWebpackAssets(compilation) {
 
 function convertFilesToDict(assets) {
   return assets
-    .filter(file => file.indexOf("node_modules") === -1)
+    .filter(file => file && file.indexOf("node_modules") === -1)
     .reduce((acc, file) => {
       const unixFile = convertToUnixPath(file);
 
