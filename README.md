@@ -42,7 +42,7 @@ The plugin will report unused files and unused exports into your terminal but th
   loader: 'babel-loader',
   options: {
     presets: [
-      ['env', { modules: false }
+      ['env', { modules: false }]
     ]
   }
 }
