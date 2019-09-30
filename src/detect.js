@@ -28,7 +28,10 @@ function detectDeadCode(compilation, options) {
 }
 
 function getPattern({ context, patterns, exclude }) {
-  return patterns.map(pattern => path.resolve(context, pattern)).concat(exclude.map(pattern => `!${pattern}`));
+  return patterns
+    .map(pattern => path.resolve(context, pattern))
+    .concat(exclude.map(pattern => `!${pattern}`))
+    .map(convertToUnixPath);
 }
 
 function getUsedExportMap(includedFileMap, compilation) {
