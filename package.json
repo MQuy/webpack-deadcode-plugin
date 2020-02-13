@@ -19,7 +19,7 @@
     "node": ">=6.11.5"
   },
   "dependencies": {
-    "chalk": "^2.0.0",
-    "fast-glob": "^2.0.0"
+    "chalk": "^3.0.0",
+    "fast-glob": "^3.1.1"
   }
 }
