@@ -40,21 +40,25 @@ function getUsedExportMap(includedFileMap, compilation) {
   compilation.chunks.forEach(function(chunk) {
     for (const module of chunk.modulesIterable) {
       if (!module.resource) continue;
-
-      const providedExports = module.providedExports || module.buildMeta.providedExports;
+      const providedExports = compilation.chunkGraph.moduleGraph.getProvidedExports(module);
+      const usedExports = compilation.chunkGraph.moduleGraph.getUsedExports(module, chunk.runtime);
       const path = convertToUnixPath(module.resource);
+      let usedExportsArr = [];
+      if(usedExports instanceof Set) {
+        usedExportsArr = Array.from(usedExports);
+      }
 
       if (
-        module.usedExports !== true &&
+        usedExports !== true &&
         providedExports !== true &&
         /^((?!(node_modules)).)*$/.test(path) &&
         includedFileMap[path]
       ) {
-        if (module.usedExports === false) {
+        if (usedExports === false) {
           unusedExportMap[path] = providedExports;
         } else if (providedExports instanceof Array) {
           const unusedExports = providedExports.filter(
-            x => module.usedExports instanceof Array && !module.usedExports.includes(x)
+            x => usedExportsArr instanceof Array && !usedExportsArr.includes(x)
           );
 
           if (unusedExports.length > 0) {
