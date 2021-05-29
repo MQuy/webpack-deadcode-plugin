@@ -38,14 +38,29 @@ function getUsedExportMap(includedFileMap, compilation) {
   const unusedExportMap = {};
 
   compilation.chunks.forEach(function(chunk) {
+    const isWebpack5 = compilation.chunkGraph ? true : false;
     for (const module of chunk.modulesIterable) {
       if (!module.resource) continue;
-      const providedExports = compilation.chunkGraph.moduleGraph.getProvidedExports(module);
-      const usedExports = compilation.chunkGraph.moduleGraph.getUsedExports(module, chunk.runtime);
+      let providedExports;
+      if(isWebpack5) {
+        providedExports = compilation.chunkGraph.moduleGraph.getProvidedExports(module);
+      } else {
+        providedExports = module.providedExports || module.buildMeta.providedExports;
+      }
+      let usedExports;
+      if(isWebpack5) {
+        usedExports = compilation.chunkGraph.moduleGraph.getUsedExports(module, chunk.runtime);
+      } else {
+        usedExports = module.usedExports;
+      }
       const path = convertToUnixPath(module.resource);
       let usedExportsArr = [];
+      // in webpack 4 usedExports can be null | boolean | Array<string>
+      // in webpack 5 it can be null | boolean | SortableSet<string>
       if(usedExports instanceof Set) {
         usedExportsArr = Array.from(usedExports);
+      } else {
+        usedExportsArr = usedExports;
       }
 
       if (
