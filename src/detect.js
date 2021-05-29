@@ -38,23 +38,42 @@ function getUsedExportMap(includedFileMap, compilation) {
   const unusedExportMap = {};
 
   compilation.chunks.forEach(function(chunk) {
+    const isWebpack5 = compilation.chunkGraph ? true : false;
     for (const module of chunk.modulesIterable) {
       if (!module.resource) continue;
-
-      const providedExports = module.providedExports || module.buildMeta.providedExports;
+      let providedExports;
+      if(isWebpack5) {
+        providedExports = compilation.chunkGraph.moduleGraph.getProvidedExports(module);
+      } else {
+        providedExports = module.providedExports || module.buildMeta.providedExports;
+      }
+      let usedExports;
+      if(isWebpack5) {
+        usedExports = compilation.chunkGraph.moduleGraph.getUsedExports(module, chunk.runtime);
+      } else {
+        usedExports = module.usedExports;
+      }
       const path = convertToUnixPath(module.resource);
+      let usedExportsArr = [];
+      // in webpack 4 usedExports can be null | boolean | Array<string>
+      // in webpack 5 it can be null | boolean | SortableSet<string>
+      if(usedExports instanceof Set) {
+        usedExportsArr = Array.from(usedExports);
+      } else {
+        usedExportsArr = usedExports;
+      }
 
       if (
-        module.usedExports !== true &&
+        usedExports !== true &&
         providedExports !== true &&
         /^((?!(node_modules)).)*$/.test(path) &&
         includedFileMap[path]
       ) {
-        if (module.usedExports === false) {
+        if (usedExports === false) {
           unusedExportMap[path] = providedExports;
         } else if (providedExports instanceof Array) {
           const unusedExports = providedExports.filter(
-            x => module.usedExports instanceof Array && !module.usedExports.includes(x)
+            x => usedExportsArr instanceof Array && !usedExportsArr.includes(x)
           );
 
           if (unusedExports.length > 0) {
