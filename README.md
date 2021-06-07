@@ -121,7 +121,7 @@ The array of patterns to not look at.
 
 #### options.context
 
-Current working directoy for patterns above. If you don't set explicitly, your webpack context will be used.
+Current working directory for patterns above. If you don't set it explicitly, your webpack context will be used.
 
 #### options.failOnHint (default: `false`)
 
@@ -133,7 +133,12 @@ Whether to run unused files detection or not.
 
 #### options.detectUnusedExport (default: `true`)
 
-Whether to run unsed export detection or not.
+Whether to run unused export detection or not.
+
+#### options.log (default: `"all"`)
+
+`"all"`: show all messages.
+`"unused"`: only show messages when there are either unused files or unused export.
 
 [npm]: https://img.shields.io/npm/v/webpack-deadcode-plugin.svg
 [npm-url]: https://npmjs.com/package/webpack-deadcode-plugin

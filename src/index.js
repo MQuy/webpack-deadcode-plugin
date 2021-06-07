@@ -14,7 +14,8 @@ class WebpackDeadcodePlugin {
         context: compiler.context,
         failOnHint: false,
         detectUnusedFiles: true,
-        detectUnusedExport: true
+        detectUnusedExport: true,
+        log: "all",
       },
       this.options
     );
