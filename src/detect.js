@@ -3,7 +3,8 @@ const chalk = require("chalk");
 const fg = require("fast-glob");
 
 function detectDeadCode(compilation, options) {
-  const assets = getWebpackAssets(compilation);
+  const isWebpack5 = compilation.chunkGraph ? true : false;
+  const assets = getWebpackAssets(compilation, isWebpack5);
   const compiledFiles = convertFilesToDict(assets);
   const includedFiles = fg.sync(getPattern(options));
 
@@ -11,7 +12,7 @@ function detectDeadCode(compilation, options) {
   let unusedExportMap = [];
 
   if (options.detectUnusedFiles) {
-    unusedFiles = includedFiles.filter((file) => !compiledFiles[file]);
+    unusedFiles = includedFiles.filter(file => !compiledFiles[file]);
 
     if (Object.keys(unusedFiles).length > 0 || options.log === "all") {
       logUnusedFiles(unusedFiles);
@@ -19,7 +20,7 @@ function detectDeadCode(compilation, options) {
   }
 
   if (options.detectUnusedExport) {
-    unusedExportMap = getUsedExportMap(convertFilesToDict(includedFiles), compilation);
+    unusedExportMap = getUsedExportMap(convertFilesToDict(includedFiles), compilation, isWebpack5);
 
     if (Object.keys(unusedExportMap).length > 0 || options.log == "all") {
       logUnusedExportMap(unusedExportMap);
@@ -35,58 +36,71 @@ function detectDeadCode(compilation, options) {
 
 function getPattern({ context, patterns, exclude }) {
   return patterns
-    .map((pattern) => path.resolve(context, pattern))
-    .concat(exclude.map((pattern) => `!${pattern}`))
+    .map(pattern => path.resolve(context, pattern))
+    .concat(exclude.map(pattern => `!${pattern}`))
     .map(convertToUnixPath);
 }
 
-function getUsedExportMap(includedFileMap, compilation) {
+function getUsedExportMap(includedFileMap, compilation, isWebpack5) {
   const unusedExportMap = {};
 
   compilation.chunks.forEach(function (chunk) {
-    const isWebpack5 = compilation.chunkGraph ? true : false;
-
-    for (const module of chunk.modulesIterable) {
-      if (!module.resource) continue;
-
-      let providedExports;
-      if (isWebpack5) {
-        providedExports = compilation.chunkGraph.moduleGraph.getProvidedExports(module);
-      } else {
-        providedExports = module.providedExports || module.buildMeta.providedExports;
-      }
-
-      let usedExports;
-      if (isWebpack5) {
-        usedExports = compilation.chunkGraph.moduleGraph.getUsedExports(module, chunk.runtime);
-      } else {
-        usedExports = module.usedExports;
-      }
-
-      const path = convertToUnixPath(module.resource);
-      let usedExportsArr = [];
-      // in webpack 4 usedExports can be null | boolean | Array<string>
-      // in webpack 5 it can be null | boolean | SortableSet<string>
-      if (usedExports instanceof Set) {
-        usedExportsArr = Array.from(usedExports);
-      } else {
-        usedExportsArr = usedExports;
-      }
-
-      if (usedExports !== true && providedExports !== true && /^((?!(node_modules)).)*$/.test(path) && includedFileMap[path]) {
-        if (usedExports === false) {
-          unusedExportMap[path] = providedExports;
-        } else if (providedExports instanceof Array) {
-          const unusedExports = providedExports.filter((x) => usedExportsArr instanceof Array && !usedExportsArr.includes(x));
-
-          if (unusedExports.length > 0) {
-            unusedExportMap[path] = unusedExports;
-          }
-        }
+    if (isWebpack5) {
+      compilation.chunkGraph.getChunkModules(chunk).forEach(module => {
+        outputUnusedExportMap(compilation, chunk, module, includedFileMap, unusedExportMap, isWebpack5);
+      });
+    } else {
+      for (const module of chunk.modulesIterable) {
+        outputUnusedExportMap(compilation, chunk, module, includedFileMap, unusedExportMap, isWebpack5);
       }
     }
   });
   return unusedExportMap;
+}
+
+function outputUnusedExportMap(compilation, chunk, module, includedFileMap, unusedExportMap, isWebpack5) {
+  if (!module.resource) return;
+
+  let providedExports;
+  if (isWebpack5) {
+    providedExports = compilation.chunkGraph.moduleGraph.getProvidedExports(module);
+  } else {
+    providedExports = module.providedExports || module.buildMeta.providedExports;
+  }
+
+  let usedExports;
+  if (isWebpack5) {
+    usedExports = compilation.chunkGraph.moduleGraph.getUsedExports(module, chunk.runtime);
+  } else {
+    usedExports = module.usedExports;
+  }
+
+  const path = convertToUnixPath(module.resource);
+  let usedExportsArr = [];
+  // in webpack 4 usedExports can be null | boolean | Array<string>
+  // in webpack 5 it can be null | boolean | SortableSet<string>
+  if (usedExports instanceof Set) {
+    usedExportsArr = Array.from(usedExports);
+  } else {
+    usedExportsArr = usedExports;
+  }
+
+  if (
+    usedExports !== true &&
+    providedExports !== true &&
+    /^((?!(node_modules)).)*$/.test(path) &&
+    includedFileMap[path]
+  ) {
+    if (usedExports === false) {
+      unusedExportMap[path] = providedExports;
+    } else if (providedExports instanceof Array) {
+      const unusedExports = providedExports.filter(x => usedExportsArr instanceof Array && !usedExportsArr.includes(x));
+
+      if (unusedExports.length > 0) {
+        unusedExportMap[path] = unusedExports;
+      }
+    }
+  }
 }
 
 function logUnusedExportMap(unusedExportMap) {
@@ -94,7 +108,7 @@ function logUnusedExportMap(unusedExportMap) {
   if (Object.keys(unusedExportMap).length > 0) {
     let numberOfUnusedExport = 0;
 
-    Object.keys(unusedExportMap).forEach((modulePath) => {
+    Object.keys(unusedExportMap).forEach(modulePath => {
       const unusedExports = unusedExportMap[modulePath];
 
       console.log(chalk.yellow(`\n${modulePath}`));
@@ -110,9 +124,10 @@ function logUnusedExportMap(unusedExportMap) {
 function getWebpackAssets(compilation) {
   let assets = Array.from(compilation.fileDependencies);
 
-  Object.keys(compilation.assets).forEach((assetName) => {
-    const assetPath = compilation.assets[assetName].existsAt;
-
+  const compiler = compilation.compiler;
+  const outputPath = compilation.getPath(compiler.outputPath);
+  compilation.getAssets().forEach(asset => {
+    const assetPath = path.join(outputPath, asset.name);
     assets.push(assetPath);
   });
   return assets;
@@ -120,7 +135,7 @@ function getWebpackAssets(compilation) {
 
 function convertFilesToDict(assets) {
   return assets
-    .filter((file) => file && file.indexOf("node_modules") === -1)
+    .filter(file => file && file.indexOf("node_modules") === -1)
     .reduce((acc, file) => {
       const unixFile = convertToUnixPath(file);
 
@@ -132,10 +147,10 @@ function convertFilesToDict(assets) {
 function logUnusedFiles(unusedFiles) {
   console.log(chalk.yellow("\n--------------------- Unused Files ---------------------"));
   if (unusedFiles.length > 0) {
-    unusedFiles.forEach((file) => console.log(`\n${chalk.yellow(file)}`));
+    unusedFiles.forEach(file => console.log(`\n${chalk.yellow(file)}`));
     console.log(
       chalk.yellow(`\nThere are ${unusedFiles.length} unused files (¬º-°)¬.`),
-      chalk.red.bold(`\n\nPlease be careful if you want to remove them.\n`)
+      chalk.red.bold(`\n\nPlease be careful if you want to remove them.\n`),
     );
   } else {
     console.log(chalk.green("\nPerfect, there is nothing to do ٩(◕‿◕｡)۶."));
@@ -145,4 +160,5 @@ function logUnusedFiles(unusedFiles) {
 function convertToUnixPath(path) {
   return path.replace(/\\+/g, "/");
 }
+
 module.exports = detectDeadCode;
