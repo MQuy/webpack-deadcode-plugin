@@ -16,15 +16,14 @@ class App extends Component {
         {
           id: 1,
           name: "[Webpack] — Smart Loading Assets For Production",
-          url:
-            "https://hackernoon.com/webpack-smart-loading-assets-for-production-3571e0a29c2e"
+          url: "https://hackernoon.com/webpack-smart-loading-assets-for-production-3571e0a29c2e",
         },
         {
           id: 2,
           name: "V8 Engine Overview",
-          url: "https://medium.com/@MQuy90/v8-engine-overview-7c965731ced4"
-        }
-      ]
+          url: "https://medium.com/@MQuy90/v8-engine-overview-7c965731ced4",
+        },
+      ],
     };
   }
   render() {
@@ -75,7 +74,7 @@ class Story extends Component {
   }
   handleClick = () => {
     this.setState({
-      likes: this.state.likes + 1
+      likes: this.state.likes + 1,
     });
   };
 }

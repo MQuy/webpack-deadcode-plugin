@@ -2,10 +2,6 @@ export function abcdefgh() {
   console.log(1);
 }
 
-export function demo () {
-  
-}
+export function demo() {}
 
-export function xyz() {
-  
-}
+export function xyz() {}

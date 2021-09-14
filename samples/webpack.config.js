@@ -1,7 +1,6 @@
 const webpack = require("webpack");
 const DeadCodePlugin = require("webpack-deadcode-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const { styleLoader } = require("es6-css-loader");
 
 module.exports = {
   entry: [`webpack-hot-middleware/client?path=http://localhost:3000/__webpack_hmr`, "./index.js"],
@@ -10,13 +9,13 @@ module.exports = {
 
   output: {
     path: __dirname,
-    filename: "bundle.js"
+    filename: "bundle.js",
   },
 
   mode: "development",
 
   optimization: {
-    usedExports: true
+    usedExports: true,
   },
 
   module: {
@@ -31,8 +30,8 @@ module.exports = {
             [
               "@babel/plugin-transform-react-jsx",
               {
-                pragma: "createElement"
-              }
+                pragma: "createElement",
+              },
             ],
             "@babel/plugin-syntax-dynamic-import",
             "@babel/plugin-syntax-import-meta",
@@ -41,39 +40,44 @@ module.exports = {
             [
               "@babel/plugin-proposal-decorators",
               {
-                legacy: true
-              }
+                legacy: true,
+              },
             ],
             "@babel/plugin-proposal-function-sent",
             "@babel/plugin-proposal-export-namespace-from",
             "@babel/plugin-proposal-numeric-separator",
-            "@babel/plugin-proposal-throw-expressions"
-          ]
-        }
+            "@babel/plugin-proposal-throw-expressions",
+          ],
+        },
       },
       {
         test: /\.css$/,
         use: [
-          styleLoader,
+          {
+            loader: "style-loader",
+            options: {
+              esModule: true,
+            },
+          },
           {
             loader: "css-loader",
             options: {
-              modules: true
-            }
-          }
-        ]
-      }
-    ]
+              esModule: true,
+              modules: true,
+            },
+          },
+        ],
+      },
+    ],
   },
   plugins: [
     new DeadCodePlugin({
       patterns: ["*.(js|css)"],
-      exclude: ["**/node_modules/**"]
+      exclude: ["**/node_modules/**"],
     }),
-    new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
-      template: "template.html"
-    })
-  ]
+      template: "template.html",
+    }),
+  ],
 };

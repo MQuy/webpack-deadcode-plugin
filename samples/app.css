@@ -3,6 +3,6 @@
 }
 
 .xxx {
-  composes: zzzz from './vendor.css';
+  composes: zzzz from "./vendor.css";
   float: left;
 }

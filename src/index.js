@@ -17,7 +17,7 @@ class WebpackDeadcodePlugin {
         detectUnusedExport: true,
         log: "all",
       },
-      this.options
+      this.options,
     );
 
     if (compiler.hooks) {

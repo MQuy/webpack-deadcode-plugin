@@ -1,7 +1,7 @@
-import { reload } from './app';
+import { reload } from "./app";
 
-reload()
+reload();
 
 if (module.hot) {
-  module.hot.accept('./app', () => reload());
+  module.hot.accept("./app", () => reload());
 }
