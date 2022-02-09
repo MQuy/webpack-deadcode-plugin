@@ -37,7 +37,7 @@ function detectDeadCode(compilation, options) {
 function getPattern({ context, patterns, exclude }) {
 	return patterns
 		.map(pattern => path.resolve(context, pattern))
-		.concat(exclude.map(pattern => `!${pattern}`))
+		.concat(exclude.map(pattern => `!${path.resolve(context, pattern)}`))
 		.map(convertToUnixPath);
 }
 
