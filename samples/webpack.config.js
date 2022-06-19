@@ -1,5 +1,5 @@
 const webpack = require("webpack");
-const DeadCodePlugin = require("webpack-deadcode-plugin");
+const DeadCodePlugin = require("../src/index");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
