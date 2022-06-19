@@ -138,7 +138,14 @@ Whether to run unused export detection or not.
 #### options.log (default: `"all"`)
 
 `"all"`: show all messages.
+
 `"unused"`: only show messages when there are either unused files or unused export.
+
+`"none"`: won't show unused files or unused export messages in the terminal, it can keep terminal clean when set `exportJSON` to `true`
+
+#### options.exportJSON (default: `false`)
+
+When set to `true`, it will export the unused files and unused export to a JSON file called `deadcode.json` at the root of the project.
 
 [npm]: https://img.shields.io/npm/v/webpack-deadcode-plugin.svg
 [npm-url]: https://npmjs.com/package/webpack-deadcode-plugin
