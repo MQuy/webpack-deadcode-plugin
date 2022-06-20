@@ -2,6 +2,7 @@ const path = require("path");
 const chalk = require("chalk");
 const fs = require("fs");
 const fg = require("fast-glob");
+const getDirName = path.dirname;
 
 function detectDeadCode(compilation, options) {
 	const isWebpack5 = compilation.chunkGraph ? true : false;
@@ -14,8 +15,7 @@ function detectDeadCode(compilation, options) {
 
 	if (options.detectUnusedFiles) {
 		unusedFiles = includedFiles.filter(file => !compiledFiles[file]);
-
-		if (Object.keys(unusedFiles).length > 0 || options.log !== "none") {
+		if ((Object.keys(unusedFiles).length > 0 && options.log !== "none") || options.log === "all") {
 			logUnusedFiles(unusedFiles);
 		}
 	}
@@ -23,13 +23,16 @@ function detectDeadCode(compilation, options) {
 	if (options.detectUnusedExport) {
 		unusedExportMap = getUsedExportMap(convertFilesToDict(includedFiles), compilation, isWebpack5);
 
-		if (Object.keys(unusedExportMap).length > 0 || options.log !== "none") {
+		if ((Object.keys(unusedExportMap).length > 0 && options.log !== "none") || options.log === "all") {
 			logUnusedExportMap(unusedExportMap);
 		}
 	}
 
 	if (options.exportJSON) {
 		let exportPath = "deadcode.json";
+		if (typeof options.exportJSON === "string") {
+			exportPath = options.exportJSON + "/" + exportPath;
+		}
 		try {
 			fs.stat(exportPath, err => {
 				if (err == null) {
@@ -57,11 +60,12 @@ function exportResultToJSON(exportPath, unusedFiles, unusedExports) {
 		unusedFiles,
 		unusedExports,
 	};
-	fs.writeFile(exportPath, JSON.stringify(data, null, 2), err => {
-		if (err) {
-			throw err;
-		}
-		console.log(exportPath + " is generated.");
+	fs.mkdir(getDirName(exportPath), { recursive: true }, err => {
+		if (err) throw err;
+		fs.writeFile(exportPath, JSON.stringify(data, null, 2), err => {
+			if (err) throw err;
+			console.info(path.resolve(exportPath) + " is generated.");
+		});
 	});
 }
 

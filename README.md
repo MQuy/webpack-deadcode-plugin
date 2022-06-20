@@ -145,7 +145,20 @@ Whether to run unused export detection or not.
 
 #### options.exportJSON (default: `false`)
 
-When set to `true`, it will export the unused files and unused export to a JSON file called `deadcode.json` at the root of the project.
+`false`: won't create `deadcode.json` for the unused files and unused export.
+
+`true`: create `deadcode.json` for the unused files and unused export at the root of the project.
+
+You can set `exportJSON` to a specific path, and it will generate `deadcode.json` in that path.
+
+```js
+new DeadCodePlugin({
+  patterns: ["*.(js|css)"],
+  exclude: ["**/node_modules/**"],
+  log: "none",
+  exportJSON: "./analysis"
+}),
+```
 
 [npm]: https://img.shields.io/npm/v/webpack-deadcode-plugin.svg
 [npm-url]: https://npmjs.com/package/webpack-deadcode-plugin
