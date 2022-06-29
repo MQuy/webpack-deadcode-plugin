@@ -1,6 +1,8 @@
 const path = require("path");
 const chalk = require("chalk");
+const fs = require("fs");
 const fg = require("fast-glob");
+const getDirName = path.dirname;
 
 function detectDeadCode(compilation, options) {
 	const isWebpack5 = compilation.chunkGraph ? true : false;
@@ -13,8 +15,7 @@ function detectDeadCode(compilation, options) {
 
 	if (options.detectUnusedFiles) {
 		unusedFiles = includedFiles.filter(file => !compiledFiles[file]);
-
-		if (Object.keys(unusedFiles).length > 0 || options.log === "all") {
+		if ((Object.keys(unusedFiles).length > 0 && options.log !== "none") || options.log === "all") {
 			logUnusedFiles(unusedFiles);
 		}
 	}
@@ -22,8 +23,28 @@ function detectDeadCode(compilation, options) {
 	if (options.detectUnusedExport) {
 		unusedExportMap = getUsedExportMap(convertFilesToDict(includedFiles), compilation, isWebpack5);
 
-		if (Object.keys(unusedExportMap).length > 0 || options.log == "all") {
+		if ((Object.keys(unusedExportMap).length > 0 && options.log !== "none") || options.log === "all") {
 			logUnusedExportMap(unusedExportMap);
+		}
+	}
+
+	if (options.exportJSON) {
+		let exportPath = "deadcode.json";
+		if (typeof options.exportJSON === "string") {
+			exportPath = options.exportJSON + "/" + exportPath;
+		}
+		try {
+			fs.stat(exportPath, err => {
+				if (err == null) {
+					fs.unlinkSync(exportPath);
+					return exportResultToJSON(exportPath, unusedFiles, unusedExportMap);
+				}
+				if (err.code === "ENOENT") {
+					return exportResultToJSON(exportPath, unusedFiles, unusedExportMap);
+				}
+			});
+		} catch (error) {
+			console.error("export result to json error: ", error);
 		}
 	}
 
@@ -32,6 +53,20 @@ function detectDeadCode(compilation, options) {
 			process.exit(2);
 		}
 	}
+}
+
+function exportResultToJSON(exportPath, unusedFiles, unusedExports) {
+	const data = {
+		unusedFiles,
+		unusedExports,
+	};
+	fs.mkdir(getDirName(exportPath), { recursive: true }, err => {
+		if (err) throw err;
+		fs.writeFile(exportPath, JSON.stringify(data, null, 2), err => {
+			if (err) throw err;
+			console.info(path.resolve(exportPath) + " is generated.");
+		});
+	});
 }
 
 function getPattern({ context, patterns, exclude }) {

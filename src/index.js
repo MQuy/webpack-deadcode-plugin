@@ -16,6 +16,7 @@ class WebpackDeadcodePlugin {
 				detectUnusedFiles: true,
 				detectUnusedExport: true,
 				log: "all",
+				exportJSON: false,
 			},
 			this.options,
 		);
