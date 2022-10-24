@@ -1,4 +1,3 @@
-const path = require("path");
 const detectDeadcode = require("./detect");
 
 class WebpackDeadcodePlugin {
