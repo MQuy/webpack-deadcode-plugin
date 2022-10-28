@@ -1,5 +1,5 @@
 const path = require("path");
-const chalk = require("chalk");
+const pico = require("picocolors");
 const fs = require("fs");
 const fg = require("fast-glob");
 const getDirName = path.dirname;
@@ -139,20 +139,20 @@ function outputUnusedExportMap(compilation, chunk, module, includedFileMap, unus
 }
 
 function logUnusedExportMap(unusedExportMap) {
-	console.log(chalk.yellow("\n--------------------- Unused Exports ---------------------"));
+	console.log(pico.yellow("\n--------------------- Unused Exports ---------------------"));
 	if (Object.keys(unusedExportMap).length > 0) {
 		let numberOfUnusedExport = 0;
 
 		Object.keys(unusedExportMap).forEach(modulePath => {
 			const unusedExports = unusedExportMap[modulePath];
 
-			console.log(chalk.yellow(`\n${modulePath}`));
-			console.log(chalk.yellow(`    ⟶   ${unusedExports.join(", ")}`));
+			console.log(pico.yellow(`\n${modulePath}`));
+			console.log(pico.yellow(`    ⟶   ${unusedExports.join(", ")}`));
 			numberOfUnusedExport += unusedExports.length;
 		});
-		console.log(chalk.yellow(`\nThere are ${numberOfUnusedExport} unused exports (¬º-°)¬.\n`));
+		console.log(pico.yellow(`\nThere are ${numberOfUnusedExport} unused exports (¬º-°)¬.\n`));
 	} else {
-		console.log(chalk.green("\nPerfect, there is nothing to do ٩(◕‿◕｡)۶."));
+		console.log(pico.green("\nPerfect, there is nothing to do ٩(◕‿◕｡)۶."));
 	}
 }
 
@@ -180,15 +180,15 @@ function convertFilesToDict(assets) {
 }
 
 function logUnusedFiles(unusedFiles) {
-	console.log(chalk.yellow("\n--------------------- Unused Files ---------------------"));
+	console.log(pico.yellow("\n--------------------- Unused Files ---------------------"));
 	if (unusedFiles.length > 0) {
-		unusedFiles.forEach(file => console.log(`\n${chalk.yellow(file)}`));
+		unusedFiles.forEach(file => console.log(`\n${pico.yellow(file)}`));
 		console.log(
-			chalk.yellow(`\nThere are ${unusedFiles.length} unused files (¬º-°)¬.`),
-			chalk.red.bold(`\n\nPlease be careful if you want to remove them.\n`),
+			pico.yellow(`\nThere are ${unusedFiles.length} unused files (¬º-°)¬.`),
+			pico.red.bold(`\n\nPlease be careful if you want to remove them.\n`),
 		);
 	} else {
-		console.log(chalk.green("\nPerfect, there is nothing to do ٩(◕‿◕｡)۶."));
+		console.log(pico.green("\nPerfect, there is nothing to do ٩(◕‿◕｡)۶."));
 	}
 }
 
