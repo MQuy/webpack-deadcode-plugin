@@ -11,7 +11,7 @@ function detectDeadCode(compilation, options) {
 	const includedFiles = fg.sync(getPattern(options));
 
 	let unusedFiles = [];
-	let unusedExportMap = [];
+	let unusedExportMap = {};
 
 	if (options.detectUnusedFiles) {
 		unusedFiles = includedFiles.filter(file => !compiledFiles[file]);
@@ -48,7 +48,7 @@ function detectDeadCode(compilation, options) {
 		}
 	}
 
-	if (unusedFiles.length > 0 || unusedExportMap.length > 0) {
+	if (unusedFiles.length > 0 || Object.keys(unusedExportMap).length > 0) {
 		if (options.failOnHint) {
 			process.exit(2);
 		}
